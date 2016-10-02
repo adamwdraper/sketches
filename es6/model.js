@@ -16,39 +16,30 @@ const a = {
 
 class Version {
   constructor() {
-    this._version = '';
-    this.major = 1;
-    this.minor = 0;
+    this._version = 1;
 
     Object.defineProperty(this, 'version', {
       get: function() {
         return this._version;
       }
     });
-
-    this.setVersion();
-  }
-
-  setVersion() {
-    this._version = `${this.major}.${this.minor}`;
   }
 
   increment(type = 'minor') {
-    this[type]++;
-
-    if (type === 'major') {
-      this.minor = 0;
-    }
-
-    this.setVersion();
+    this._version++;
   }
 
-
+  revert() {
+    return this._version > 1 ? this._version-- : undefined;
+  }
 }
 
 class Model {
   constructor(options) {
     this._data = {};
+    this._state = {
+      hasChanges: false
+    };
     this._history = {};
     this._version = new Version();
 
@@ -85,18 +76,41 @@ class Model {
     this._history[this.version] = this._data;
   }
 
-  set(name, value) {
-    this.saveHistory();
+  undo() {
+    const previous = this._version.revert();
 
-    this._data[name] = value;
+    if (previous) {
+      this.set(this._history[previous]);
 
-    this._version.increment();
+      delete this._history[previous];
+    }
   }
 
-  save() {
-    this._version.increment('major');
+  set(name, value) {
+    const attributes = _.isObject(name) ? name : {
+      name: value
+    };
+    let hasChanges = false;
 
-    // add some sync functionality
+    this.saveHistory();
+
+    for (let property in attributes) {
+      if (property in this._data) {
+        if (this._data[property] !== name[property]) {
+          this._data[property] = name[property];
+
+          hasChanges = true;
+        }
+      } else {
+        // throw an error
+      }
+    }
+
+    if (hasChanges) {
+      this._state.hasChanges = hasChanges;
+
+      this._version.increment();
+    }
   }
 }
 
@@ -108,11 +122,5 @@ const model = new Model({
     return this.me;
   }
 });
-
-
-
-model.hey = 'cool';
-
-console.log(model.hey);
 
 console.log(model);
