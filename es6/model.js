@@ -5,27 +5,98 @@ const _ = {
   }
 };
 
-class Model {
-  constructor (options) {
-    this.data = {};
+const a = {
+  initCount: 0,
+  getUid() {
+    this.initCount++;
 
-    for (let property in options) {
-      if (!_.isObject(options[property])) {
-        Object.defineProperty(this, property, {
-          get: function() {
-            return this.data[property];
-          },
-          set: function (value) {
-            // do some change stuff
-            console.log(`change:${property}`);
+    return `a-${this.initCount}`;
+  }
+};
 
-            this.data[property] = value;
-          }
-        });
+class Version {
+  constructor() {
+    this._version = '';
+    this.major = 1;
+    this.minor = 0;
+
+    Object.defineProperty(this, 'version', {
+      get: function() {
+        return this._version;
       }
+    });
 
-      this[property] = options[property];
+    this.setVersion();
+  }
+
+  setVersion() {
+    this._version = `${this.major}.${this.minor}`;
+  }
+
+  increment(type = 'minor') {
+    this[type]++;
+
+    if (type === 'major') {
+      this.minor = 0;
     }
+
+    this.setVersion();
+  }
+
+
+}
+
+class Model {
+  constructor(options) {
+    this._data = {};
+    this._history = {};
+    this._version = new Version();
+
+    this.uid = a.getUid();
+
+    Object.defineProperty(this, 'version', {
+      get: function() {
+        return this._version.version;
+      }
+    });
+
+    for (let name in options) {
+      if (!_.isObject(options[name])) {
+        this.addAttribute(name, options[name]);
+
+        this._data[name] = options[name];
+      } else {
+        this[name] = options[name];
+      }
+    }
+
+    this.saveHistory();
+  }
+
+  addAttribute(name, value) {
+    Object.defineProperty(this, name, {
+      get: function() {
+        return this._data[name];
+      }
+    });
+  }
+
+  saveHistory() {
+    this._history[this.version] = this._data;
+  }
+
+  set(name, value) {
+    this.saveHistory();
+
+    this._data[name] = value;
+
+    this._version.increment();
+  }
+
+  save() {
+    this._version.increment('major');
+
+    // add some sync functionality
   }
 }
 
@@ -42,6 +113,6 @@ const model = new Model({
 
 model.hey = 'cool';
 
-console.log(model.data.hey);
+console.log(model.hey);
 
-console.log(model.myNumber());
+console.log(model);
