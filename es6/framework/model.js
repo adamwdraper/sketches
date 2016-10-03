@@ -1,39 +1,3 @@
-const _ = {
-  isObject(obj) {
-    var type = typeof obj;
-    return type === 'function' || type === 'object' && !!obj;
-  }
-};
-
-const a = {
-  initCount: 0,
-  getUid() {
-    this.initCount++;
-
-    return `a-${this.initCount}`;
-  }
-};
-
-class Version {
-  constructor() {
-    this._version = 1;
-
-    Object.defineProperty(this, 'version', {
-      get: function() {
-        return this._version;
-      }
-    });
-  }
-
-  increment(type = 'minor') {
-    this._version++;
-  }
-
-  revert() {
-    return this._version > 1 ? this._version-- : undefined;
-  }
-}
-
 class Model {
   constructor(options) {
     this._data = {};
@@ -88,7 +52,7 @@ class Model {
 
   set(name, value) {
     const attributes = _.isObject(name) ? name : {
-      name: value
+      [name]: value
     };
     let hasChanges = false;
 
@@ -96,8 +60,8 @@ class Model {
 
     for (let property in attributes) {
       if (property in this._data) {
-        if (this._data[property] !== name[property]) {
-          this._data[property] = name[property];
+        if (this._data[property] !== attributes[property]) {
+          this._data[property] = attributes[property];
 
           hasChanges = true;
         }
@@ -113,14 +77,3 @@ class Model {
     }
   }
 }
-
-const hey = "hey";
-const model = new Model({
-  hey,
-  me: '2',
-  myNumber() {
-    return this.me;
-  }
-});
-
-console.log(model);
