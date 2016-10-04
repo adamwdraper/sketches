@@ -1,20 +1,12 @@
 class Model {
   constructor(options) {
     this._data = {};
-    this._state = {
-      hasChanges: false
-    };
+    this._changed = {};
     this._history = {};
-    this._version = new Version();
 
     this.uid = a.getUid();
 
-    Object.defineProperty(this, 'version', {
-      get: function() {
-        return this._version.version;
-      }
-    });
-
+    // add options
     for (let name in options) {
       if (!_.isObject(options[name])) {
         this.addAttribute(name, options[name]);
@@ -24,8 +16,6 @@ class Model {
         this[name] = options[name];
       }
     }
-
-    this.saveHistory();
   }
 
   addAttribute(name, value) {
@@ -36,44 +26,45 @@ class Model {
     });
   }
 
-  saveHistory() {
-    this._history[this.version] = this._data;
-  }
-
-  undo() {
-    const previous = this._version.revert();
-
-    if (previous) {
-      this.set(this._history[previous]);
-
-      delete this._history[previous];
-    }
-  }
-
   set(name, value) {
-    const attributes = _.isObject(name) ? name : {
-      [name]: value
-    };
-    let hasChanges = false;
+    let data;
+    let options = {};
 
-    this.saveHistory();
+    if (_.isObject(name)) {
+      data = name;
+      options = value || options;
+    } else {
+      data = {
+        [name]: value
+      };
+    }
 
-    for (let property in attributes) {
+    for (let property in data) {
       if (property in this._data) {
-        if (this._data[property] !== attributes[property]) {
-          this._data[property] = attributes[property];
+        if (this._data[property] !== data[property]) {
+          if (!this._changed[property]) {
+            this._changed[property] = this._data[property];
+          }
 
-          hasChanges = true;
+          this._data[property] = data[property];
         }
       } else {
         // throw an error
       }
     }
+  }
 
-    if (hasChanges) {
-      this._state.hasChanges = hasChanges;
-
-      this._version.increment();
+  undo() {
+    if (Object.keys(this._changed).length) {
+      this.set(this._changed);
     }
+
+    this._changed = {};
+  }
+
+  save() {
+    // so some sync
+
+    this._changed = {};
   }
 }

@@ -3,8 +3,8 @@ describe('Model', function() {
 
   beforeEach(function() {
     model = new Model({
-      name: 'model',
-      greeting: 'hey',
+      name: 'Model',
+      greeting: 'Hey',
       myMethod: function() {
         return true;
       }
@@ -21,7 +21,7 @@ describe('Model', function() {
     });
 
     it('should have a name', function() {
-      expect(model.name).to.equal('model');
+      expect(model.name).to.equal('Model');
     });
   });
 
@@ -35,11 +35,21 @@ describe('Model', function() {
       // set with object
       model.set({
         name: 'Elizabeth',
-        greeting: 'hello'
+        greeting: 'Hello'
       });
 
       expect(model.name).to.equal('Elizabeth');
-      expect(model.greeting).to.equal('hello');
+      expect(model.greeting).to.equal('Hello');
+    });
+
+    it('should undo changes', function() {
+      model.set('name', 'John');
+
+      expect(model.name).to.equal('John');
+
+      model.undo();
+
+      expect(model.name).to.equal('Model');
     });
   });
 });
