@@ -1,55 +1,82 @@
 describe('Model', function() {
-  let model;
+  let adam;
 
   beforeEach(function() {
-    model = new Model({
-      name: 'Model',
-      greeting: 'Hey',
-      myMethod: function() {
-        return true;
+    class Musician extends Model {
+      fullName() {
+        return `${this.name.first} ${this.name.last}`;
       }
+    }
+
+    adam = new Musician({
+      name: {
+        first: 'Adam',
+        last: 'Jones'
+      },
+      instrument: 'Guitar',
+      gear: [
+        'Diezel VH4',
+        'Gibson Les Paul Silverburst'
+      ]
     });
   });
 
   afterEach(function() {
-    model = null;
+    adam = null;
+  });
+
+  describe('construction', function() {
+    it('should construct', function() {
+      expect(adam).to.be.an('object');
+    });
+  });
+
+  describe('extension', function() {
+    it('should extend', function() {
+      expect(adam.fullName()).to.equal('Adam Jones');
+    });
   });
 
   describe('properties', function() {
     it('should have a uid', function() {
-      expect(model.uid).to.not.be.undefined;
+      expect(adam.uid).to.not.be.undefined;
     });
 
-    it('should have a name', function() {
-      expect(model.name).to.equal('Model');
+    it('should get attributes', function() {
+      expect(adam.name.first).to.equal('Adam');
+      expect(adam.instrument).to.equal('Guitar');
+      expect(adam.gear.length).to.be.above(0);
     });
   });
 
   describe('methods', function() {
-    it('should set properties', function() {
-      // set with name and value
-      model.set('name', 'John');
+    it('should set properties with name and value', function() {
+      adam.set('instrument', 'Synth');
 
-      expect(model.name).to.equal('John');
+      expect(adam.instrument).to.equal('Synth');
+    });
 
-      // set with object
-      model.set({
-        name: 'Elizabeth',
-        greeting: 'Hello'
+    it('should set properties with object', function() {
+      adam.set({
+        name: {
+          first: 'Justin',
+          last: 'Chancelor'
+        },
+        instrument: 'Bass'
       });
 
-      expect(model.name).to.equal('Elizabeth');
-      expect(model.greeting).to.equal('Hello');
+      expect(adam.name.first).to.equal('Justin');
+      expect(adam.instrument).to.equal('Bass');
     });
 
     it('should undo changes', function() {
-      model.set('name', 'John');
+      adam.set('name', 'Danny');
+      adam.set('instrument', 'drums');
 
-      expect(model.name).to.equal('John');
+      adam.undo();
 
-      model.undo();
-
-      expect(model.name).to.equal('Model');
+      expect(adam.name.first).to.equal('Adam');
+      expect(adam.instrument).to.equal('Guitar');
     });
   });
 });

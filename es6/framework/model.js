@@ -1,5 +1,5 @@
 class Model {
-  constructor(options) {
+  constructor(data) {
     this._data = {};
     this._changed = {};
     this._history = {};
@@ -7,14 +7,10 @@ class Model {
     this.uid = a.getUid();
 
     // add options
-    for (let name in options) {
-      if (!_.isObject(options[name])) {
-        this.addAttribute(name, options[name]);
+    for (let name in data) {
+      this.addAttribute(name, data[name]);
 
-        this._data[name] = options[name];
-      } else {
-        this[name] = options[name];
-      }
+      this._data[name] = data[name];
     }
   }
 
