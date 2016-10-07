@@ -1,11 +1,40 @@
 class Router {
   constructor(options = {}) {
+    this._regExp = {
+      optional: /\((.*?)\)/g,
+      named: /(\(\?)?:\w+/g,
+      splat: /\*\w+/g,
+      escape: /[\-{}\[\]+?.,\\\^$|#\s]/g
+    };
+    this._routes = [];
+
     this.root = options.root || '/';
     this.routes = options.routes || {
       '/': 'action'
     };
 
-    // listen to url changes and call functions that match route
+    this._processRoutes();
+  }
+
+  _processRoutes() {
+    for (let route in this.routes) {
+      this._routes.unshift({
+        route,
+        regExp: this._routeToRegExp(route),
+        callback: this[this.routes[route]]
+      });
+    }
+  }
+
+  _routeToRegExp(route) {
+    route = route.replace(this._regExp.escape, '\\$&')
+      .replace(this._regExp.optional, '(?:$1)?')
+      .replace(this._regExp.named, function(match, optional) {
+       return optional ? match : '([^/?]+)';
+      })
+      .replace(this._regExp.splat, '([^?]*?)');
+
+    return new RegExp('^' + route + '(?:\\?([\\s\\S]*))?$');
   }
 
   _getFragment() {
@@ -21,7 +50,13 @@ class Router {
   }
 
   _execute(fragment) {
-    this[this.routes[fragment]]();
+    for (let route of this._routes) {
+      if (route.regExp.test(fragment)) {
+        route.callback();
+
+        break;
+      }
+    }
   }
 
   start() {
