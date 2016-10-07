@@ -1,13 +1,12 @@
 describe('Model', function() {
+  class Musician extends Model {
+    fullName() {
+      return `${this.name.first} ${this.name.last}`;
+    }
+  }
   let adam;
 
   beforeEach(function() {
-    class Musician extends Model {
-      fullName() {
-        return `${this.name.first} ${this.name.last}`;
-      }
-    }
-
     adam = new Musician({
       name: {
         first: 'Adam',

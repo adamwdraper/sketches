@@ -1,5 +1,5 @@
 class Model {
-  constructor(data) {
+  constructor(data = {}) {
     this._data = {};
     this._changed = {};
     this._history = {};
