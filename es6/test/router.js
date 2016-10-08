@@ -11,6 +11,8 @@ describe('Router', function() {
   });
 
   afterEach(function() {
+    // router.go('/');
+
     router = null;
   });
 
@@ -20,9 +22,25 @@ describe('Router', function() {
     });
   });
 
-  describe('routes', function() {
-    it('should route to function', function() {
-      router.start();
+  // describe('routes', function() {
+  //   it('should route to function', function() {
+  //     router.start();
+  //   });
+  // });
+
+  describe('fragments', function() {
+    it('should generate fragment path', function() {
+      router.root = '/';
+
+      expect(router._createFragment('/')).to.equal('/');
+      expect(router._createFragment('path')).to.equal('/path');
+      expect(router._createFragment('/path')).to.equal('/path');
+
+      router.root = '/root';
+
+      expect(router._createFragment('/')).to.equal('/root');
+      expect(router._createFragment('path')).to.equal('/root/path');
+      expect(router._createFragment('/path')).to.equal('/root/path');
     });
   });
 });

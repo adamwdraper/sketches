@@ -26,6 +26,10 @@ class Router {
     }
   }
 
+  _trimSlashes(string) {
+    return string.replace(/(^\/)|(\/$)/g, '');
+  }
+
   _routeToRegExp(route) {
     route = route.replace(this._regExp.escape, '\\$&')
       .replace(this._regExp.optional, '(?:$1)?')
@@ -43,8 +47,22 @@ class Router {
     return this.root !== '/' ? uri.replace(this.root, '') : uri;
   }
 
+  _createFragment(fragment) {
+    let path = [];
+
+    if (this.root !== '/') {
+      path.push(this._trimSlashes(this.root));
+    }
+
+    if (fragment !== '/') {
+      path.push(this._trimSlashes(fragment));
+    }
+
+    return `/${path.join('/')}`;
+  }
+
   _route() {
-    const fragment = this._getFragment();
+    const fragment = this._createFragment();
 
     this._execute(fragment);
   }
@@ -66,7 +84,7 @@ class Router {
   }
 
   go(fragment) {
-    window.history.pushState(null, null, `${this.root}/${fragment}`);
+    window.history.pushState({}, '', _getFragmentPath(fragment));
   }
 
   action() {
