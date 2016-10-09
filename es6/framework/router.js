@@ -2,6 +2,7 @@ class Router {
   constructor(options = {}) {
     this._regExp = {
       default: /^[*]$/,
+      regExp: /^\/.+\/$/,
       slashes: /(^\/)|(\/$)/g,
       optional: /\((.*?)\)/g,
       named: /(\(\?)?:\w+/g,
@@ -24,7 +25,7 @@ class Router {
     for (let route in this.routes) {
       this._routes.push({
         route,
-        regExp: this._regExp.slashes.test(route) ? new RegExp(this._trimSlashes(route)) : this._routeToRegExp(route),
+        regExp: this._regExp.regExp.test(route) ? new RegExp(this._trimSlashes(route)) : this._routeToRegExp(route),
         callback: this[this.routes[route]]
       });
     }
@@ -38,7 +39,7 @@ class Router {
     let regExp;
 
     if (route === '*') {
-      regExp = new RegExp(this._regExp.default);
+      regExp = this._regExp.default;
     } else {
       route = route.replace(this._regExp.escape, '\\$&')
         .replace(this._regExp.optional, '(?:$1)?')
