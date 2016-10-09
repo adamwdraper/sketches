@@ -8,8 +8,8 @@
       console.log('one');
     }
 
-    two() {
-      console.log('two');
+    two(id) {
+      console.log('two', id ? id : '');
     }
 
     three() {

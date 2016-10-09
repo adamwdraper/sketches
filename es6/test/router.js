@@ -1,17 +1,28 @@
 describe('Router', function() {
   class App extends Router {
-    action() {
-      console.log('action called');
-    }
   }
+
   let router;
 
   beforeEach(function() {
     router = new App({
-
+      root: '/mocha',
+      routes: {
+        '/': 'home',
+        '/one': 'one',
+        '/two(/:id)': 'two',
+        '/three': 'three',
+        '/^\/f/': 'four',
+        '*': 'notFound'
+      }
     });
 
-    sinon.stub(router.prototype, 'action');
+    sinon.stub(router.prototype, 'home');
+    sinon.stub(router.prototype, 'one');
+    sinon.stub(router.prototype, 'two');
+    sinon.stub(router.prototype, 'three');
+    sinon.stub(router.prototype, 'four');
+    sinon.stub(router.prototype, 'notFound');
   });
 
   afterEach(function() {

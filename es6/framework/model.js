@@ -16,6 +16,7 @@ class Model {
     this.setup();
   }
 
+  // internal functions
   _addAttribute(name, value) {
     Object.defineProperty(this, name, {
       get: function() {
@@ -24,8 +25,9 @@ class Model {
     });
   }
 
+  // api
   setup() {
-    
+
   }
 
   set(name, value) {

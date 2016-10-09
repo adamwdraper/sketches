@@ -21,6 +21,8 @@ class Router {
     this.setup();
   }
 
+
+  // internal functions
   _processRoutes() {
     for (let route in this.routes) {
       this._routes.push({
@@ -60,6 +62,10 @@ class Router {
     return this.root !== '/' ? uri.replace(this.root, '') : uri;
   }
 
+  _getParameters(route, fragment) {
+    return route.regExp.exec(fragment).slice(1);
+  }
+
   _createPath(fragment) {
     let path = [];
 
@@ -82,9 +88,12 @@ class Router {
 
   _execute(fragment) {
     let callback;
+    let args;
 
     for (let route of this._routes) {
       if (route.regExp.test(fragment) || route.route === '*') {
+        args = this._getParameters(route, fragment);
+
         callback = route.callback;
 
         break;
@@ -92,12 +101,13 @@ class Router {
     }
 
     if (callback) {
-      callback();
+      callback.apply(this, args);
     } else {
       throw new Error(`No route found for ${fragment}`);
     }
   }
 
+  // api
   setup() {
 
   }
