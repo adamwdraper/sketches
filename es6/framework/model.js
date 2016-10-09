@@ -8,18 +8,24 @@ class Model {
 
     // add options
     for (let name in data) {
-      this.addAttribute(name, data[name]);
+      this._addAttribute(name, data[name]);
 
       this._data[name] = data[name];
     }
+
+    this.setup();
   }
 
-  addAttribute(name, value) {
+  _addAttribute(name, value) {
     Object.defineProperty(this, name, {
       get: function() {
         return this._data[name];
       }
     });
+  }
+
+  setup() {
+    
   }
 
   set(name, value) {

@@ -5,22 +5,34 @@ const hostname = 'localhost';
 const port = 3000;
 
 const server = http.createServer(function(request, response) {
+  const logs = [];
   let resource = request.url.substring(1);
+  let parts;
+
+  logs.push(`request: ${resource}`);
 
   if (!/\.[0-9a-z]+$/i.test(resource)) {
-    resource += '.html';
+    parts = resource.split('/', 1);
+
+    resource = `${parts[0]}.html`;
   }
 
-  console.log(resource);
+  logs.push(`served: ${resource}`);
 
   fs.readFile(resource, function (error, data) {
     if (error) {
       response.writeHead(404);
       response.write('Not Found!');
+
+      logs.push('statusCode: 404');
     } else {
       response.writeHead(200);
       response.write(data);
+      
+      logs.push('statusCode: 200');
     }
+
+    console.log(logs.join(' - '));
 
     response.end();
   });

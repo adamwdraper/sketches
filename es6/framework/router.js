@@ -14,6 +14,8 @@ class Router {
     };
 
     this._processRoutes();
+
+    this.setup();
   }
 
   _processRoutes() {
@@ -75,6 +77,10 @@ class Router {
         break;
       }
     }
+  }
+
+  setup() {
+
   }
 
   start() {
