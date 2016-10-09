@@ -16,6 +16,10 @@
       console.log('three');
     }
 
+    four() {
+      console.log('four');
+    }
+
     notFound() {
       console.log('not found');
     }
@@ -31,8 +35,10 @@
     root: '/index',
     routes: {
       '/one': 'one',
-      '/two': 'two',
-      '/three': 'three'
+      '/two(/:id)': 'two',
+      '/three': 'three',
+      '/^\/f/': 'four',
+      '*': 'notFound'
     }
   });
 

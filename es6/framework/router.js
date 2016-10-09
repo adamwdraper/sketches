@@ -1,6 +1,8 @@
 class Router {
   constructor(options = {}) {
     this._regExp = {
+      default: /^[*]$/,
+      slashes: /(^\/)|(\/$)/g,
       optional: /\((.*?)\)/g,
       named: /(\(\?)?:\w+/g,
       splat: /\*\w+/g,
@@ -10,7 +12,7 @@ class Router {
 
     this.root = options.root || '/';
     this.routes = options.routes || {
-      '/': 'action'
+      '*': 'action'
     };
 
     this._processRoutes();
@@ -20,27 +22,35 @@ class Router {
 
   _processRoutes() {
     for (let route in this.routes) {
-      this._routes.unshift({
+      this._routes.push({
         route,
-        regExp: this._routeToRegExp(route),
+        regExp: this._regExp.slashes.test(route) ? new RegExp(this._trimSlashes(route)) : this._routeToRegExp(route),
         callback: this[this.routes[route]]
       });
     }
   }
 
   _trimSlashes(string) {
-    return string.replace(/(^\/)|(\/$)/g, '');
+    return string.replace(this._regExp.slashes, '');
   }
 
   _routeToRegExp(route) {
-    route = route.replace(this._regExp.escape, '\\$&')
-      .replace(this._regExp.optional, '(?:$1)?')
-      .replace(this._regExp.named, function(match, optional) {
-       return optional ? match : '([^/?]+)';
-      })
-      .replace(this._regExp.splat, '([^?]*?)');
+    let regExp;
 
-    return new RegExp('^' + route + '(?:\\?([\\s\\S]*))?$');
+    if (route === '*') {
+      regExp = new RegExp(this._regExp.default);
+    } else {
+      route = route.replace(this._regExp.escape, '\\$&')
+        .replace(this._regExp.optional, '(?:$1)?')
+        .replace(this._regExp.named, function(match, optional) {
+         return optional ? match : '([^/?]+)';
+        })
+        .replace(this._regExp.splat, '([^?]*?)');
+
+      regExp = new RegExp(`^${route}$`);
+    }
+
+    return regExp;
   }
 
   _getFragment() {
@@ -70,12 +80,20 @@ class Router {
   }
 
   _execute(fragment) {
+    let callback;
+
     for (let route of this._routes) {
-      if (route.regExp.test(fragment)) {
-        route.callback();
+      if (route.regExp.test(fragment) || route.route === '*') {
+        callback = route.callback;
 
         break;
       }
+    }
+
+    if (callback) {
+      callback();
+    } else {
+      throw new Error(`No route found for ${fragment}`);
     }
   }
 
