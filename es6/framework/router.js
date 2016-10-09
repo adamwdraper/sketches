@@ -47,14 +47,14 @@ class Router {
     return this.root !== '/' ? uri.replace(this.root, '') : uri;
   }
 
-  _createFragment(fragment) {
+  _createPath(fragment) {
     let path = [];
 
     if (this.root !== '/') {
       path.push(this._trimSlashes(this.root));
     }
 
-    if (fragment !== '/') {
+    if (fragment && fragment !== '/') {
       path.push(this._trimSlashes(fragment));
     }
 
@@ -62,7 +62,7 @@ class Router {
   }
 
   _route() {
-    const fragment = this._createFragment();
+    const fragment = this._getFragment();
 
     this._execute(fragment);
   }
@@ -80,11 +80,17 @@ class Router {
   start() {
     this._route();
 
-    window.onpopstate = this._route;
+    window.onpopstate = () => {
+      this._route();
+    };
   }
 
   go(fragment) {
-    window.history.pushState({}, '', _getFragmentPath(fragment));
+    const path = this._createPath(fragment);
+
+    window.history.pushState({}, '', path);
+
+    this._route();
   }
 
   action() {

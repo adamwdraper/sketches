@@ -7,7 +7,11 @@ describe('Router', function() {
   let router;
 
   beforeEach(function() {
-    router = new App();
+    router = new App({
+
+    });
+
+    sinon.stub(router.prototype, 'action');
   });
 
   afterEach(function() {
@@ -30,17 +34,30 @@ describe('Router', function() {
 
   describe('fragments', function() {
     it('should generate fragment path', function() {
+      const paths = {
+        '/': '/',
+        'path': '/path',
+        '/path': '/path',
+        '/path/path2': '/path/path2'
+      };
+      const rootPaths = {
+        '/': '/root',
+        'path': '/root/path',
+        '/path': '/root/path',
+        '/path/path2': '/root/path/path2'
+      };
+
+      // test with / as root
       router.root = '/';
+      for (let path in paths) {
+        expect(router._createFragment(path)).to.equal(paths[path]);
+      }
 
-      expect(router._createFragment('/')).to.equal('/');
-      expect(router._createFragment('path')).to.equal('/path');
-      expect(router._createFragment('/path')).to.equal('/path');
-
+      // test with a root
       router.root = '/root';
-
-      expect(router._createFragment('/')).to.equal('/root');
-      expect(router._createFragment('path')).to.equal('/root/path');
-      expect(router._createFragment('/path')).to.equal('/root/path');
+      for (let path in rootPaths) {
+        expect(router._createFragment(path)).to.equal(rootPaths[path]);
+      }
     });
   });
 });
