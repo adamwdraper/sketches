@@ -5,11 +5,26 @@ const _ = {
   }
 };
 
-const a = {
-  initCount: 0,
-  getUid() {
+class Framework {
+  constructor() {
+    this.initCount = 0;
+
+    this.reserved = {
+      model: new Set([
+        'uid',
+        'setup',
+        'set',
+        'undo',
+        'save'
+      ])
+    };
+  }
+
+  getUid(type) {
     this.initCount++;
 
-    return `a${this.initCount}`;
+    return `${type}-${this.initCount}`;
   }
-};
+}
+
+const a = new Framework();

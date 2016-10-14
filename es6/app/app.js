@@ -1,4 +1,4 @@
-(function(){
+(function() {
   class App extends Router {
     setup() {
       super.start();

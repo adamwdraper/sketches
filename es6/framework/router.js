@@ -11,6 +11,8 @@ class Router {
     };
     this._routes = [];
 
+    this.uid = a.getUid('router');
+
     this.root = options.root || '/';
     this.routes = options.routes || {
       '*': 'action'
@@ -103,7 +105,7 @@ class Router {
     if (callback) {
       callback.apply(this, args);
     } else {
-      throw new Error(`No route found for ${fragment}`);
+      throw new Error(`No route found for '${fragment}'`);
     }
   }
 
@@ -126,6 +128,10 @@ class Router {
     window.history.pushState({}, '', path);
 
     this._route();
+  }
+
+  back() {
+    window.history.back();
   }
 
   action() {

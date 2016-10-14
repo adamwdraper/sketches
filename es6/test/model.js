@@ -8,6 +8,7 @@ describe('Model', function() {
 
   beforeEach(function() {
     adam = new Musician({
+      id: '1',
       name: {
         first: 'Adam',
         last: 'Jones'
@@ -37,8 +38,9 @@ describe('Model', function() {
   });
 
   describe('properties', function() {
-    it('should have a uid', function() {
+    it('should have ids', function() {
       expect(adam.uid).to.not.be.undefined;
+      expect(adam.id).to.equal('1');
     });
 
     it('should get attributes', function() {

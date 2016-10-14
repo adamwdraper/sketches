@@ -17,11 +17,11 @@ describe('Framework', function() {
     });
 
     it('should generate unique ids', function() {
-      const uId = a.getUid();
-      const uId2 = a.getUid();
+      const uId = a.getUid('model');
+      const uId2 = a.getUid('model');
 
-      expect(uId).to.equal('a1');
-      expect(uId2).to.equal('a2');
+      expect(uId).to.equal('model-1');
+      expect(uId2).to.equal('model-2');
     });
   });
 });

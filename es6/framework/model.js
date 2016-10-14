@@ -2,9 +2,9 @@ class Model {
   constructor(data = {}) {
     this._data = {};
     this._changed = {};
-    this._history = {};
+    this._reserved = a.reserved.model;
 
-    this.uid = a.getUid();
+    this.uid = a.getUid('model');
 
     // add options
     for (let name in data) {
@@ -18,11 +18,19 @@ class Model {
 
   // internal functions
   _addAttribute(name, value) {
-    Object.defineProperty(this, name, {
-      get: function() {
-        return this._data[name];
+    if (!this._reserved.has(name)) {
+      if (!this[name]) {
+        Object.defineProperty(this, name, {
+          get: function() {
+            return this._data[name];
+          }
+        });
+      } else {
+        throw new Error(`'${name}' is already a property on this model.`);
       }
-    });
+    } else {
+      throw new Error(`'${name}' is reserved property on this model.`);
+    }
   }
 
   // api
@@ -53,7 +61,7 @@ class Model {
           this._data[property] = data[property];
         }
       } else {
-        // throw an error
+        throw new Error(`'${property}' is not an attribute of this model.`);
       }
     }
   }
