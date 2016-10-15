@@ -37,6 +37,23 @@ describe('Model', function() {
     });
   });
 
+  describe('statuses', function() {
+    it('should have status', function() {
+      expect(adam.is.new).to.be.true;
+      expect(adam.is.changed).to.be.false;
+
+      adam.instrument = 'Synth';
+
+      expect(adam.is.changed).to.be.true;
+      expect(adam.is.saved).to.be.false;
+
+      adam.save();
+
+      expect(adam.is.saved).to.be.true;
+      expect(adam.is.new).to.be.false;
+    });
+  });
+
   describe('properties', function() {
     it('should have ids', function() {
       expect(adam.uid).to.not.be.undefined;
@@ -48,20 +65,25 @@ describe('Model', function() {
       expect(adam.instrument).to.equal('Guitar');
       expect(adam.gear.length).to.be.above(0);
     });
+
+    it('should set attributes', function() {
+      adam.name = {
+        first: 'Justin',
+        last: 'Chancellor'
+      };
+      adam.instrument = 'Bass';
+
+      expect(adam.name.first).to.equal('Justin');
+      expect(adam.instrument).to.equal('Bass');
+    });
   });
 
   describe('methods', function() {
-    it('should set properties with name and value', function() {
-      adam.set('instrument', 'Synth');
-
-      expect(adam.instrument).to.equal('Synth');
-    });
-
     it('should set properties with object', function() {
       adam.set({
         name: {
           first: 'Justin',
-          last: 'Chancelor'
+          last: 'Chancellor'
         },
         instrument: 'Bass'
       });
@@ -71,10 +93,10 @@ describe('Model', function() {
     });
 
     it('should undo changes', function() {
-      adam.set('name', 'Danny');
-      adam.set('instrument', 'drums');
+      adam.name = 'Danny';
+      adam.instrument = 'drums';
 
-      adam.undo();
+      adam.cancel();
 
       expect(adam.name.first).to.equal('Adam');
       expect(adam.instrument).to.equal('Guitar');

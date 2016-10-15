@@ -14,9 +14,17 @@ class Framework {
         'uid',
         'setup',
         'set',
-        'undo',
+        'cancel',
         'save'
       ])
+    };
+
+    this.statuses = {
+      model: [
+        'new',
+        'saved',
+        'changed'
+      ]
     };
   }
 
