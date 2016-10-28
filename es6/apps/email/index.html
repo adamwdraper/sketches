@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Email</title>
+    <link rel="stylesheet" href="/apps/email/flexview.css">
+  </head>
+  <body>
+    <div class="ui-app">
+      <div class="ui-views">
+        <div class="view active">
+          <div class="view-main">
+            <div class="view-header">
+              <h1>Email</h1>
+              <div>
+                <input type="text" name="search" value="">
+              </div>
+            </div>
+            <div class="view-content">
+              <div class="view active">
+                <div class="view-main">
+                  <div class="view-header">
+                    Actions
+                  </div>
+                  <div class="view-content">
+                    <div class="view active">
+                      <div class="view-aside">
+                        <div class="view-content">
+                          <nav>
+                            <ul>
+                              <li>
+                                <a href="#">Inbox</a>
+                                <a href="#">Sent</a>
+                                <a href="#">Trash</a>
+                              </li>
+                            </ul>
+                          </nav>
+                        </div>
+                      </div>
+                      <div class="view-main">
+                        <div class="view-content">
+                          <div class="view active" data-view-inbox>Inbox</div>
+                          <div class="view" data-view-sent>Sent</div>
+                          <div class="view" data-view-trash>Trash</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="/framework/framework.js" charset="utf-8"></script>
+    <script src="/framework/router.js" charset="utf-8"></script>
+    <script src="/framework/data.js" charset="utf-8"></script>
+    <script src="/framework/model.js" charset="utf-8"></script>
+    <script src="/apps/email/email.js" charset="utf-8"></script>
+  </body>
+</html>
