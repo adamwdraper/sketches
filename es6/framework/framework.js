@@ -12,20 +12,11 @@ class Framework {
     this.reserved = {
       model: new Set([
         'uid',
-        'is',
         'setup',
         'set',
         'cancel',
         'save'
       ])
-    };
-
-    this.statuses = {
-      model: [
-        'new',
-        'saved',
-        'changed'
-      ]
     };
   }
 

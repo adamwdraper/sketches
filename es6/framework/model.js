@@ -3,15 +3,8 @@ class Model {
     this._data = {};
     this._changed = {};
     this._reserved = a.reserved.model;
-    this._statuses = a.statuses.model;
-    this._status = 'new';
 
     this.uid = a.getUid('model');
-    this.is = {};
-
-    for (let status of this._statuses) {
-      this._addIs(status);
-    }
 
     this.set(data, {
       init: true
@@ -40,14 +33,6 @@ class Model {
     } else {
       throw new Error(`'${name}' is reserved property on this model.`);
     }
-  }
-
-  _addIs(status) {
-    Object.defineProperty(this.is, status, {
-      get: () => {
-        return this._status === status;
-      }
-    });
   }
 
   // api
@@ -84,14 +69,10 @@ class Model {
   }
 
   save() {
-    // so some sync
+    // do some sync
 
     this._changed = {};
 
     this._status = 'saved';
-  }
-
-  is() {
-    return
   }
 }

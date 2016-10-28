@@ -37,23 +37,6 @@ describe('Model', function() {
     });
   });
 
-  describe('statuses', function() {
-    it('should have status', function() {
-      expect(adam.is.new).to.be.true;
-      expect(adam.is.changed).to.be.false;
-
-      adam.instrument = 'Synth';
-
-      expect(adam.is.changed).to.be.true;
-      expect(adam.is.saved).to.be.false;
-
-      adam.save();
-
-      expect(adam.is.saved).to.be.true;
-      expect(adam.is.new).to.be.false;
-    });
-  });
-
   describe('properties', function() {
     it('should have ids', function() {
       expect(adam.uid).to.not.be.undefined;
