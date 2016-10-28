@@ -1,9 +1,11 @@
 (function() {
-  class Todo extends Router {
+  class TodoRouter extends a.Router {
     todo() {
-      
+      console.log('todo');
     }
   }
+
+  class TodoData extends a.Data {}
 
   $(document).on('click', '[data-go]', function(event) {
     event.preventDefault();
@@ -11,12 +13,13 @@
     todo.go($(this).data('go'));
   });
 
-  const todo = new Todo({
+  const data = new TodoData();
+  const router = new TodoRouter({
     root: '/todo',
     routes: {
       '*': 'todo'
     }
   });
 
-  todo.start();
+  a.router.start();
 }());

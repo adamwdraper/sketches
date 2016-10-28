@@ -20,6 +20,9 @@ class Framework {
     };
   }
 
+  // internal functions
+
+  // api
   getUid(type) {
     this.initCount++;
 

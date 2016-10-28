@@ -1,5 +1,7 @@
 class Router {
   constructor(options = {}) {
+    this._register();
+
     this._regExp = {
       default: /^[*]$/,
       regExp: /^\/.+\/$/,
@@ -23,8 +25,15 @@ class Router {
     this.setup();
   }
 
-
   // internal functions
+  _register() {
+    if (a.router) {
+      throw new Error('Only one router can be registered.');
+    } else {
+      a.router = this;
+    }
+  }
+
   _processRoutes() {
     for (let route in this.routes) {
       this._routes.push({
@@ -140,3 +149,6 @@ class Router {
     console.log('action called');
   }
 }
+
+// attach to framework
+a.Router = Router;

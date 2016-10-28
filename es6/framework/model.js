@@ -18,10 +18,10 @@ class Model {
     if (!this._reserved.has(name)) {
       if (!this[name]) {
         Object.defineProperty(this, name, {
-          get: function() {
+          get() {
             return this._data[name];
           },
-          set: function(value) {
+          set(value) {
             this.set({
               [name]: value
             });
@@ -76,3 +76,6 @@ class Model {
     this._status = 'saved';
   }
 }
+
+// attach to framework
+a.Model = Model;
