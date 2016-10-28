@@ -65,7 +65,9 @@ class Router {
   }
 
   _getParameters(route, fragment) {
-    return route.regExp.exec(fragment).slice(1);
+    const args = route.regExp.exec(fragment);
+
+    return args ? args.slice(1) : [];
   }
 
   _createPath(fragment) {

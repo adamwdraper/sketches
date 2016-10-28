@@ -11,10 +11,11 @@ const server = http.createServer(function(request, response) {
 
   logs.push(`request: ${resource}`);
 
+  // if there is not an extension serve the html page
   if (!/\.[0-9a-z]+$/i.test(resource)) {
     parts = resource.split('/', 1);
 
-    resource = `${parts[0]}.html`;
+    resource = `apps/${parts[0]}/index.html`;
   }
 
   logs.push(`served: ${resource}`);
@@ -28,7 +29,7 @@ const server = http.createServer(function(request, response) {
     } else {
       response.writeHead(200);
       response.write(data);
-      
+
       logs.push('statusCode: 200');
     }
 
